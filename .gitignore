@@ -1,1 +1,11 @@
 .dotfiles
+
+# Ignore everything by default
+*
+
+# But allow dotfiles we want to track
+!.config/
+!.config/nvim/
+!.tmux.conf
+!.zshrc
+!.gitignore
