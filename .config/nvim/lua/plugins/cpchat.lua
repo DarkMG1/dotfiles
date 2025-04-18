@@ -17,7 +17,7 @@ return {
     cmd = { "CopilotChat", "CopilotChatOpen", "CopilotChatToggle" },
     keys = {
       { "<leader>cc", "<cmd>CopilotChatToggle<CR>", desc = "Toggle Copilot Chat" },
-      { "<leader>cq", "<cmd>CopilotChat<CR>", desc = "Prompt Copilot Chat" },
+      { "<leader>cv", "<cmd>CopilotChat<CR>", desc = "Prompt Copilot Chat" },
     },
   },
 }

@@ -8,6 +8,11 @@ return {
 	},
 	config = function()
 		require("neo-tree").setup({
+			window = {
+				mappings = {
+					["<BS>"] = "noop", -- disable backspace going up a directory
+				},
+			},
 			filesystem = {
 				filtered_items = {
 					hide_dotfiles = false,
@@ -15,6 +20,13 @@ return {
 					hide_by_name = {
 						".DS_Store",
 						"thumbs.db",
+						"*.dSYM",
+						"cmake-build-debug/",
+						"build/",
+						".idea",
+						".cache",
+						"compile_commands.json",
+						"*.o",
 					},
 					never_show = {}, -- allow Makefile and other all-caps files
 				},

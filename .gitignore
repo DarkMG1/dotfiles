@@ -3,9 +3,12 @@
 # Ignore everything by default
 *
 
-# But allow dotfiles we want to track
+# Allow these specific dotfiles and directories
 !.config/
 !.config/nvim/
+!.config/nvim/lua/
+!.config/nvim/lua/plugins/
+!.config/nvim/lua/plugins/*.lua
+
 !.tmux.conf
-!.zshrc
 !.gitignore
