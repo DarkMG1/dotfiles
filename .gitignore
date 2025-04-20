@@ -10,5 +10,6 @@
 !.config/nvim/lua/plugins/
 !.config/nvim/lua/plugins/*.lua
 
+!.install.sh
 !.tmux.conf
 !.gitignore
