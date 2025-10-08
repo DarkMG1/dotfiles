@@ -11,6 +11,7 @@ vim.opt.updatetime = 300
 vim.opt.smartindent = true
 vim.opt.autoindent = true
 vim.opt.cindent = false
+vim.opt.clipboard = ""
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<leader>fb", ":Telescope buffers<CR>", { desc = "Find buffer" })
@@ -18,6 +19,9 @@ vim.keymap.set("n", "<leader>ne", vim.lsp.buf.code_action, { desc = "LSP Code Ac
 vim.keymap.set("i", "jk", "<Esc>", { noremap = true })
 vim.keymap.set("n", "<leader>r", "<C-r>", { desc = "Redo" })
 vim.keymap.set("n", "<C-h>", ":Neotree toggle<CR>", { desc = "Toggle Neo-tree" })
+vim.keymap.set("n", "<leader>.", ":vertical resize +5<CR>")
+vim.keymap.set("n", "<leader>+", ":vertical resize -5<CR>")
+vim.g.instant_username = "DarkMG1"
 
 vim.keymap.set("n", "<leader>ff", function()
   local path = require("neo-tree.sources.manager").get_state("filesystem").path
@@ -72,12 +76,29 @@ vim.diagnostic.config({
 	update_in_insert = false,
 })
 
+vim.api.nvim_create_autocmd("BufEnter", {
+  pattern = "/Users/chiragbhat/CLionProjects/umich-eecs482/*",
+  callback = function()
+    vim.b.copilot_enabled = false
+		local cwd = vim.fn.getcwd()
+		if cwd:match("umich%-eecs482") then
+			vim.cmd("Copilot disable")
+		else
+			vim.cmd("Copilot enable")
+		end
+  end,
+})
+
 vim.keymap.set("n", "<leader>e", function()
 	vim.diagnostic.open_float(nil, {
 		border = "rounded",
 		focusable = false,
 	})
 end, { desc = "Show diagnostics in float" })
+
+vim.keymap.set("n", "<leader>f", function()
+  vim.lsp.buf.format()
+end, { desc = "Format code" })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = { "*.v", "*.sv" },
@@ -271,4 +292,19 @@ end, {
 	nargs = 1,
 	complete = "file",
 	desc = "Create new C++ class with .h and .cpp",
+})
+
+-- Neo-tree auto resize
+vim.api.nvim_create_autocmd("BufEnter", {
+  pattern = "neo-tree*",
+  callback = function()
+    vim.cmd("vertical resize 30") -- shrink when focused
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufLeave", {
+  pattern = "neo-tree*",
+  callback = function()
+    vim.cmd("vertical resize 15") -- smaller when not focused
+  end,
 })

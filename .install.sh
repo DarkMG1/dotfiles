@@ -25,14 +25,18 @@ read
 install_common() {
   echo "📦 Installing common tools..."
   if [[ "$OS" == "mac" ]]; then
-    brew install neovim git curl ripgrep fd cmake python3 tmux
+    brew install git curl ripgrep fd cmake python3 tmux neovim
   else
     sudo apt update
-    sudo apt install -y neovim git curl ripgrep fd-find python3-pip tmux cmake unzip
+    sudo apt remove -y neovim || true
+    sudo add-apt-repository ppa:neovim-ppa/stable -y
+    sudo apt update
+    sudo apt install -y neovim git curl ripgrep fd-find python3-pip tmux cmake unzip libarchive-tools
     if ! command -v fd &> /dev/null; then
       mkdir -p ~/.local/bin
-      ln -s "$(which fdfind)" ~/.local/bin/fd
-      echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+      if [ ! -e ~/.local/bin/fd ]; then
+        ln -s "$(which fdfind)" ~/.local/bin/fd
+      fi
     fi
   fi
 }
@@ -73,9 +77,9 @@ install_codelldb() {
   else
     mkdir -p ~/.local/bin
     cd /tmp
-    curl -L -o codelldb.tar.xz https://github.com/vadimcn/vscode-lldb/releases/latest/download/codelldb-x86_64-linux.vsix
+    curl -L -o codelldb.vsix https://github.com/vadimcn/vscode-lldb/releases/latest/download/codelldb-x86_64-linux.vsix
     mkdir -p ~/.local/share/nvim/mason/packages/codelldb/extension
-    bsdtar -xf codelldb.tar.xz -C ~/.local/share/nvim/mason/packages/codelldb/extension
+    unzip -o codelldb.vsix -d ~/.local/share/nvim/mason/packages/codelldb/extension
     ln -sf ~/.local/share/nvim/mason/packages/codelldb/extension/adapter/codelldb ~/.local/bin/codelldb
   fi
 }
@@ -113,16 +117,52 @@ sync_plugins() {
   echo "✅ Lazy.nvim plugins synced successfully"
 }
 
-# Run all installers
+copy_dotfiles() {
+  echo "📂 Preparing to copy Neovim config and tmux.conf..."
+
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+  # Handle ~/.config/nvim
+  if [ -e "$HOME/.config/nvim" ]; then
+    read -rp "⚠️  ~/.config/nvim already exists. Overwrite it? [y/N] " confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+      rm -rf "$HOME/.config/nvim"
+      mkdir -p "$HOME/.config"
+      cp -r "$SCRIPT_DIR/.config/nvim" "$HOME/.config/nvim"
+      echo "✅ Overwrote ~/.config/nvim"
+    else
+      echo "⏩ Skipped ~/.config/nvim"
+    fi
+  else
+    mkdir -p "$HOME/.config"
+    cp -r "$SCRIPT_DIR/.config/nvim" "$HOME/.config/nvim"
+    echo "✅ Copied nvim config to ~/.config/nvim"
+  fi
+
+  # Handle ~/.tmux.conf
+  if [ -e "$HOME/.tmux.conf" ]; then
+    read -rp "⚠️  ~/.tmux.conf already exists. Overwrite it? [y/N] " confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+      cp "$SCRIPT_DIR/.tmux.conf" "$HOME/.tmux.conf"
+      echo "✅ Overwrote ~/.tmux.conf"
+    else
+      echo "⏩ Skipped ~/.tmux.conf"
+    fi
+  else
+    cp "$SCRIPT_DIR/.tmux.conf" "$HOME/.tmux.conf"
+    echo "✅ Copied tmux config to ~/.tmux.conf"
+  fi
+}
+
+# Run all steps
 install_common
 install_node
 install_clang
 install_lua
 install_codelldb
 install_verible
-
-# Bootstrap Lazy.nvim and sync plugins
 bootstrap_lazy
 sync_plugins
+copy_dotfiles
 
 echo "🎉 Full Neovim environment setup complete."

@@ -9,6 +9,7 @@ return {
 	config = function()
 		require("neo-tree").setup({
 			window = {
+				width = 30,
 				mappings = {
 					["<BS>"] = "noop", -- disable backspace going up a directory
 				},
@@ -21,7 +22,16 @@ return {
 						".DS_Store",
 						"thumbs.db",
 						"*.dSYM",
+						".version482",
+						".clang-format",
+						"cmake_install.cmake",
+						"CMakeCache.txt",
+						"*.dSYM/",
+						".git/",
+						"*.a",
+						"*.o",
 						"cmake-build-debug/",
+						"CMakeFiles",
 						"build/",
 						".idea",
 						".cache",
