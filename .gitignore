@@ -9,6 +9,8 @@
 !.config/nvim/lua/
 !.config/nvim/lua/plugins/
 !.config/nvim/lua/plugins/*.lua
+!.config/nvim/lua/vim-options/
+!.config/nvim/lua/vim-options/*.lua
 
 !.install.sh
 !.tmux.conf
