@@ -1,3 +1,9 @@
+-- Plugin: nvim-dap
+-- Description: Debug Adapter Protocol client for Neovim.
+-- Dependency: codelldb (installed via Mason), nvim-dap-ui, nvim-nio.
+-- Keybinds: <leader>dt (Toggle Breakpoint), <leader>dc (Continue), <leader>ds (Step Over).
+
+
 return {
 	"mfussenegger/nvim-dap",
 	dependencies = {
@@ -41,7 +47,12 @@ return {
 				type = "codelldb",
 				request = "launch",
 				program = function()
-					return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+						local cmake = require("cmake-tools")
+						local launch_target = cmake.get_launch_target()
+						if launch_target then
+								return launch_target
+						end
+						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
 				end,
 				cwd = "${workspaceFolder}",
 				stopOnEntry = false,
@@ -67,11 +78,5 @@ return {
 		end
 
 		-- Keybindings
-		vim.keymap.set("n", "<Leader>do", ':lua require("dapui").open()<CR>')
-		vim.keymap.set("n", "<Leader>dr", ':lua require"dap".continue()<CR>')
-		vim.keymap.set("n", "<Leader>dt", ":DapToggleBreakpoint<CR>")
-		vim.keymap.set("n", "<Leader>dc", ":DapContinue<CR>")
-		vim.keymap.set("n", "<Leader>dx", ":DapTerminate<CR>")
-		vim.keymap.set("n", "<Leader>ds", ":DapStepOver<CR>")
 	end,
 }

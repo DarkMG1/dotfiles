@@ -17,5 +17,7 @@ vim.opt.rtp:prepend(lazypath)
 
 local opts = {}
 
-require("vim-options")
+require("vim-options.sets")
+require("vim-options.keymaps")
+require("vim-options.commands")
 require("lazy").setup("plugins")

@@ -1,3 +1,8 @@
+-- Plugin: alpha-nvim
+-- Description: Fast and fully customizable greeter (dashboard) for Neovim.
+-- Features: Dynamic time-based greetings, custom ASCII art, and quick-access buttons.
+-- Keybinds: Triggered automatically on empty startup or :Alpha.
+
 return {
 	"goolord/alpha-nvim",
 	dependencies = {

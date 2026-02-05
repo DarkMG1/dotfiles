@@ -1,3 +1,8 @@
+-- Plugins: Mason, Mason-LSPConfig, nvim-lspconfig
+-- Description: Manages external tools and connects Neovim to Language Servers.
+-- Languages: Lua, C++, Python, TypeScript, Verilog/SystemVerilog.
+-- Keybinds: K (Hover), <leader>gd (Definition), <leader>gr (References).
+
 return {
 	{
 		"williamboman/mason.nvim",
@@ -39,7 +44,7 @@ return {
 			lspconfig.ts_ls.setup({
 				capabilities = capabilities,
 			})
-			lspconfig.pylsp.setup({
+			lspconfig.pyright.setup({
 				capabilities = capabilities,
 			})
 			lspconfig.clangd.setup({
@@ -58,10 +63,6 @@ return {
 				filetypes = { "verilog", "systemverilog" },
 				capabilities = require("cmp_nvim_lsp").default_capabilities(),
 			})
-			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
-			vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
-			vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, {})
-			vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
 		end,
 	},
 }

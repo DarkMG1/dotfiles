@@ -1,38 +1,53 @@
+-- Plugin: lualine.nvim
+-- Updated to use vim.lsp.get_clients() (Neovim 0.10+ standard)
+
 return {
-	"nvim-lualine/lualine.nvim",
-	config = function()
-		require("lualine").setup({
-			options = {
-				theme = "auto",
-			},
-			sections = {
-				lualine_a = {
-					{
-						"diagnostics",
-
-						-- Table of diagnostic sources, available sources are:
-						--   'nvim_lsp', 'nvim_diagnostic', 'nvim_workspace_diagnostic', 'coc', 'ale', 'vim_lsp'.
-						-- or a function that returns a table as such:
-						--   { error=error_cnt, warn=warn_cnt, info=info_cnt, hint=hint_cnt }
-						sources = { "nvim_lsp" },
-
-						-- Displays diagnostics for the defined severity types
-						sections = { "error", "warn", "info", "hint" },
-
-						diagnostics_color = {
-							-- Same values as the general color option can be used here.
-							error = "DiagnosticError", -- Changes diagnostics' error color.
-							warn = "DiagnosticWarn", -- Changes diagnostics' warn color.
-							info = "DiagnosticInfo", -- Changes diagnostics' info color.
-							hint = "DiagnosticHint", -- Changes diagnostics' hint color.
-						},
-						symbols = { error = "E", warn = "W", info = "I", hint = "H" },
-						colored = true, -- Displays diagnostics status in color if set to true.
-						update_in_insert = false, -- Update diagnostics in insert mode.
-						always_visible = false, -- Show diagnostics even if there are none.
-					},
-				},
-			},
-		})
-	end,
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+        require("lualine").setup({
+            options = {
+                theme = "auto",
+                section_separators = { left = "", right = "" },
+                component_separators = { left = "", right = "" },
+            },
+            sections = {
+                lualine_a = { "mode" },
+                lualine_b = { 
+                    "branch", 
+                    {
+                        "diagnostics",
+                        sources = { "nvim_lsp" },
+                        -- SYMBOLS: Modern Nerd Font icons
+                        symbols = { error = " ", warn = " ", info = " ", hint = "󰌵 " },
+                        colored = true,
+                    }
+                },
+                lualine_c = { { "filename", path = 1 } }, -- Shows parent dir for better context
+                lualine_x = { 
+                    {
+                        function()
+                            -- Get clients attached to the current buffer
+                            local clients = vim.lsp.get_clients({ bufnr = 0 })
+                            if #clients == 0 then
+                                return "No LSP"
+                            end
+                            
+                            -- Gather names of all active clients
+                            local names = {}
+                            for _, client in ipairs(clients) do
+                                table.insert(names, client.name)
+                            end
+                            return " " .. table.concat(names, "|")
+                        end,
+                        color = { fg = "#ffffff", gui = "bold" },
+                    },
+                    "encoding", 
+                    "filetype" 
+                },
+                lualine_y = { "progress" },
+                lualine_z = { "location" },
+            },
+        })
+    end,
 }
